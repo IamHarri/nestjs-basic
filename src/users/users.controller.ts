@@ -9,11 +9,9 @@ export class UsersController {
 
   @Post()
   create(
-    @Body("email") email: string,
-    @Body("password") password: string,
-    @Body("name") name: string,
+    @Body() basicnestjs: CreateUserDto,
   ) {
-    return this.usersService.create(name, email, password);
+    return this.usersService.create(basicnestjs);
   }
 
   @Get()

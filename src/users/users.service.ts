@@ -8,20 +8,19 @@ import {hashSync, genSaltSync } from "bcryptjs";
 
 @Injectable()
 export class UsersService {
-  // create(createUserDto: CreateUserDto) {
   constructor(@InjectModel(User.name) private UserModel: Model<User>) {}
 
-  getHashPassword = (myPlaintextPassword: string) => {
+  getHashPassword = (plaintextPassword: string) => {
     const salt = genSaltSync(10);
-    const hash = hashSync(myPlaintextPassword, salt);
+    const hash = hashSync(plaintextPassword, salt);
     return hash;
   }
 
-  async create(name: string, email: string, password: string) {
-    const hashPassword = this.getHashPassword(password);
+  async create(createUserDto: CreateUserDto) {
+    const hashPassword = this.getHashPassword(createUserDto.password);
     let user = await this.UserModel.create({
-      name,
-      email,
+      name: createUserDto.name,
+      email: createUserDto.email,
       password: hashPassword,
     });
     return user;
