@@ -42,7 +42,12 @@ export class UsersService {
   async update(updateUserDto: UpdateUserDto) {
     return await this.UserModel.updateOne({ _id: updateUserDto._id },{...updateUserDto})}
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return "User not found";
+
+    return this.UserModel.deleteOne({
+      _id: id,
+    });
   }
 }
