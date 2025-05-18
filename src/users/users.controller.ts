@@ -20,9 +20,19 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(
+    @Param('id') 
+    id: string
+  ) {
+    return this.usersService.findOne(id); // +id converts string to number
   }
+
+  // // This route can not be called because above route use it as a parameter, need to change the order of the routes
+  // @Get('/abc')
+  // findABC(){
+  //   return "this.usersService.findOne(id)"; // +id converts string to number
+  // }
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
