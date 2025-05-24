@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.shema';
 import mongoose, { Model } from 'mongoose';
-import {hashSync, genSaltSync } from "bcryptjs";
+import {hashSync, genSaltSync, compareSync } from "bcryptjs";
 
 @Injectable()
 export class UsersService {
@@ -39,6 +39,16 @@ export class UsersService {
     });
   }
 
+  findByEmail(email: string) {
+    return this.UserModel.findById({
+      email: email
+    })
+  }
+
+  checkPassword(hash: string, plain: string){
+    return compareSync(plain, hash);
+  }
+  
   async update(updateUserDto: UpdateUserDto) {
     return await this.UserModel.updateOne({ _id: updateUserDto._id },{...updateUserDto})}
 
