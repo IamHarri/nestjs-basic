@@ -40,15 +40,15 @@ export class UsersService {
   }
 
   findByEmail(email: string) {
-    return this.UserModel.findById({
-      email: email
+    return this.UserModel.findOne({
+      email: email,
     })
   }
 
   checkPassword(hash: string, plain: string){
     return compareSync(plain, hash);
   }
-  
+
   async update(updateUserDto: UpdateUserDto) {
     return await this.UserModel.updateOne({ _id: updateUserDto._id },{...updateUserDto})}
 

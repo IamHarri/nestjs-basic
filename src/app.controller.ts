@@ -1,21 +1,22 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Post, Render, Request, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
+import { LocalAuthGuard } from './auth/local-auth.guard';
+import { AuthService } from './auth/auth.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private configService: ConfigService,
+    private authService: AuthService,
   ) {}
 
-  @Get()
-  @Render('home')
-  getHello() {
-    const message1 = this.appService.getHello();
-    return { 
-      message: message1,
-    };
-    // return this.appService.getHello();
+  @UseGuards(LocalAuthGuard)
+  @Post('/login')
+  handleLogin(@Request() req) {
+    // return req.user;
+    return this.authService.login(req.user);
   }
 }
