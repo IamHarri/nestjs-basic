@@ -15,7 +15,7 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalGuards( new JwtAuthGuard( reflector ) );
+  // app.useGlobalGuards( new JwtAuthGuard( reflector ) );
   await app.listen(configService.get<number>('PORT'));
 }
 bootstrap();
