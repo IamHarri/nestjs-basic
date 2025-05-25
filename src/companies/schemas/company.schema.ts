@@ -4,6 +4,15 @@ import { HydratedDocument } from 'mongoose';
 
 export type CompanyDocument = HydratedDocument<Company>;
 
+class UserReference {
+  @Prop()
+  _id: string;
+
+  @Prop()
+  email: string;
+}
+
+
 @Schema({timestamps: true})
 export class Company {
   @Prop()
@@ -27,23 +36,32 @@ export class Company {
   @Prop()
   isDeleted: boolean;
 
-  @Prop()
-  createddBy: {
-    _id: string;
-    email: string;
-  };
+  @Prop({ type: UserReference })
+  createdBy: UserReference;
 
-  @Prop()
-  updatedBy: {
-    _id: string;
-    email: string;
-  };
+  @Prop({ type: UserReference })
+  updatedBy: UserReference;
 
-  @Prop()
-  deletedBy: {
-    _id: string;
-    email: string;
-  }
+  @Prop({ type: UserReference })
+  deletedBy: UserReference;
+  
+  // @Prop()
+  // createdBy: {
+  //   _id: string;
+  //   email: string;
+  // }
+
+  // @Prop()
+  // updatedBy: {
+  //   _id: string;
+  //   email: string;
+  // }
+
+  // @Prop()
+  // deletedBy: {
+  //   _id: string;
+  //   email: string;
+  // }
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);
