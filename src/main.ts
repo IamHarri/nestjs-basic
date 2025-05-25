@@ -16,6 +16,14 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.useGlobalPipes(new ValidationPipe());
   // app.useGlobalGuards( new JwtAuthGuard( reflector ) );
+  app.enableCors(
+    {
+      "origin": "*",
+      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+      "preflightContinue": false,
+      "optionsSuccessStatus": 204
+    }
+  );
   await app.listen(configService.get<number>('PORT'));
 }
 bootstrap();
