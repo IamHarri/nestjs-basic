@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.shema';
@@ -10,8 +10,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) 
-  private UserModel: SoftDeleteModel<UserDocument>
-) {}
+  private UserModel: SoftDeleteModel<UserDocument>) {}
 
   getHashPassword = (plaintextPassword: string) => {
     const salt = genSaltSync(10);
@@ -27,6 +26,20 @@ export class UsersService {
       password: hashPassword,
     });
     return user;
+  }
+
+  async resgister(user: RegisterUserDto) {
+    const {name, email, password, age, gender, address} = user;
+    const hashPassword = this.getHashPassword(user.password);
+    let newRegister = await this.UserModel.create({
+      name: user.name,
+      email: user.email,
+      password: hashPassword,
+      age: user.age,
+      gender: user.gender,
+      address: user.address,
+    });
+    return newRegister;
   }
 
   findAll() {
