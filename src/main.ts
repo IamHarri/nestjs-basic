@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -35,6 +36,9 @@ async function bootstrap() {
       "optionsSuccessStatus": 204
     }
   );
+
+  // Use cookie parser to parse cookies in requests
+  app.use(cookieParser());
 
   // config versioning
   app.setGlobalPrefix('api');
