@@ -30,14 +30,15 @@ export class UsersService {
 
   async resgister(user: RegisterUserDto) {
     const {name, email, password, age, gender, address} = user;
-    const hashPassword = this.getHashPassword(user.password);
+    const hashPassword = this.getHashPassword(password);
     let newRegister = await this.UserModel.create({
-      name: user.name,
-      email: user.email,
+      name,
+      email,
       password: hashPassword,
-      age: user.age,
-      gender: user.gender,
-      address: user.address,
+      age,
+      gender,
+      address,
+      role: "USER",
     });
     return newRegister;
   }
