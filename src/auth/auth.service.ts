@@ -1,4 +1,4 @@
-import { Injectable, Res } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Injectable, Res } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from 'src/users/users.interface';
@@ -40,10 +40,14 @@ export class AuthService {
         role
     };
     const refresh_token = this.createRefreshToken(payload);
+
+    // update user with refresh_token
     await this.usersService.updateUserToken(_id, refresh_token);
+
+    // set refresh_token as cookie
     response.cookie('refresh_token', refresh_token, 
       { httpOnly: true ,
-        maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRATION')),
+        maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRATION'))*1000,
       });
 
     return {
@@ -72,5 +76,16 @@ export class AuthService {
       }
     );
     return refresh_token;
+  }
+
+  processRefreshToken = (refreshToken: string) => {
+    try {
+      let a = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+      });
+      console.log(a);
+    } catch (error) {
+        throw new BadRequestException('Refresh token is invalid or expired');
+    }
   }
 }
