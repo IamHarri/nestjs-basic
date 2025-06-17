@@ -44,9 +44,12 @@ export class AuthController {
   @Get('/refresh')
   @Public()
   @ResponseMessage('Get User by refresh token')
-  handleRefreshToken(@Req() request: Request) {
+  handleRefreshToken(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response
+  ) {
     const refreshToken = request.cookies['refresh_token'];
-    return this.authService.processRefreshToken(refreshToken);
+    return this.authService.processRefreshToken(refreshToken, response);
   }
   // // @UseGuards(JwtAuthGuard)
   // @Get('profile')

@@ -47,7 +47,7 @@ export class AuthService {
     // set refresh_token as cookie
     response.cookie('refresh_token', refresh_token, 
       { httpOnly: true ,
-        maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRATION'))*1000,
+        maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRATION')),
       });
 
     return {
@@ -78,12 +78,53 @@ export class AuthService {
     return refresh_token;
   }
 
-  processRefreshToken = (refreshToken: string) => {
+  processRefreshToken = async (refreshToken: string, response: Response) => {
     try {
-      let a = this.jwtService.verify(refreshToken, {
+      this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       });
-      console.log(a);
+      let user = await this.usersService.findUserByToken(refreshToken);
+
+      // if user is not found or refresh token is invalid
+      if (!user) {
+        throw new BadRequestException('Refresh token is invalid or expired');
+      } else {
+        const { _id, name, email, role } = user;
+        const payload = {
+          sub: "token refresh",
+          iss: "from server",
+          _id,
+          name,
+          email,
+          role
+        };
+
+        // create new refresh token
+        const refresh_token = this.createRefreshToken(payload);
+
+        // update user with new refresh_token in database
+        await this.usersService.updateUserToken(_id, refresh_token);
+        
+        // clear old refresh token cookie
+        response.clearCookie('refresh_token');
+
+        // set refresh_token as cookie
+        response.cookie('refresh_token', refresh_token, 
+          { httpOnly: true ,
+            maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRATION')),
+          });
+        
+        // return new access token and user information
+        return {
+            access_token: this.jwtService.sign(payload),
+            user: {
+              _id,
+              name,
+              email,
+              role
+            }
+        };
+      } 
     } catch (error) {
         throw new BadRequestException('Refresh token is invalid or expired');
     }
