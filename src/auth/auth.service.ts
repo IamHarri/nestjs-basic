@@ -6,6 +6,7 @@ import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import ms from 'ms';
 import { ConfigService } from '@nestjs/config';
 import {Request, Response} from 'express';
+import { stat } from 'fs';
 @Injectable()
 export class AuthService {
 
@@ -86,9 +87,7 @@ export class AuthService {
       let user = await this.usersService.findUserByToken(refreshToken);
 
       // if user is not found or refresh token is invalid
-      if (!user) {
-        throw new BadRequestException('Refresh token is invalid or expired');
-      } else {
+      if (user) {
         const { _id, name, email, role } = user;
         const payload = {
           sub: "token refresh",
@@ -124,9 +123,17 @@ export class AuthService {
               role
             }
         };
-      } 
+      } else {
+        throw new BadRequestException('Refresh token is invalid or expired');
+      }
     } catch (error) {
         throw new BadRequestException('Refresh token is invalid or expired');
     }
+  }
+
+  logout = async (user: IUser, response: Response) => {
+    this.usersService.updateUserToken(user._id, null);
+    response.clearCookie('refresh_token');
+    return 'Ok'
   }
 }

@@ -26,19 +26,20 @@ async function bootstrap() {
 
   // Config interceptor to transform response data, so that it can be consistent across the application
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
+  
+  // Use cookie parser to parse cookies in requests
+  app.use(cookieParser());
+
 
   // config cors
   app.enableCors(
     {
-      "origin": "*",
+      "origin": true,  // "*" if * will be warning by client
       "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+      credentials: true,               // allow cookies
       "preflightContinue": false,
-      "optionsSuccessStatus": 204
     }
   );
-
-  // Use cookie parser to parse cookies in requests
-  app.use(cookieParser());
 
   // config versioning
   app.setGlobalPrefix('api');
