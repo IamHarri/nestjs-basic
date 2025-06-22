@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Upl
 import { FilesService } from './files.service';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Public } from 'src/decorator/custom';
+import { Public, ResponseMessage } from 'src/decorator/custom';
 
 @Controller('files')
 export class FilesController {
@@ -10,8 +10,10 @@ export class FilesController {
 
   @Public()
   @Post('upload')
+  @ResponseMessage('File uploaded successfully')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile( @UploadedFile(
+  uploadFile( 
+    @UploadedFile(
     new ParseFilePipeBuilder()
       .addFileTypeValidator({
         fileType: /(jpg|jpeg|png|image\/png|gif|pdf|doc|text\/plain)$/,
@@ -25,7 +27,9 @@ export class FilesController {
   ) file: Express.Multer.File
 
   ) {
-    console.log(file);
+    return {
+      fileName: file.filename
+    }
   }
 
   @Get()
