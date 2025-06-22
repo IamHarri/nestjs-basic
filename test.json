@@ -1,0 +1,20 @@
+{
+  "name": "devops",
+  "skills": [
+    "devops",
+    "docker",
+    "kubernetes"
+  ],
+  "company": {
+    "_id": "6832eef0785026690daf94c5",
+    "name": "harry founder company",
+  },
+  "salary": 100000,
+  "quantity": 1,
+  "level": "FRESHER",
+  "isActive": true,
+  "description": "JUST A DATE",
+  "startDate": ""
+  "address": "Vietnam",
+  "role": "ADMIN",
+}

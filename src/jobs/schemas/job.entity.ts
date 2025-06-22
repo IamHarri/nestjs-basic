@@ -2,16 +2,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type JobsDocument = HydratedDocument<Jobs>;
+export type JobDocument = HydratedDocument<Job>;
 
 
 @Schema({timestamps: true})
-export class Jobs {
+export class Job {
   @Prop()
   name: string;
 
   @Prop({required: true})
-  skills: string;
+  skills: string[];
 
   @Prop({type: Object})
   company: {
@@ -75,4 +75,4 @@ export class Jobs {
 
 }
 
-export const JobsSchema = SchemaFactory.createForClass(Jobs);
+export const JobSchema = SchemaFactory.createForClass(Job);

@@ -1,5 +1,5 @@
-import { Type } from 'class-transformer';
-import { IsDefined, IsEmail, IsNotEmpty, IsNotEmptyObject, IsObject, ValidateNested } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsArray, IsDate, IsDefined, IsEmail, IsNotEmpty, IsNotEmptyObject, IsObject, IsString, ValidateNested } from 'class-validator';
 
 
 class Company {
@@ -16,6 +16,8 @@ export class CreateJobDto {
   name: string;
 
   @IsNotEmpty({message: 'Skills is required' })
+  @IsArray({message: 'Skills must be an array' })
+  @IsString({each: true, message: 'Skills must be a string' })
   skills: string;
 
   @IsNotEmpty({message: 'Location is required' })
@@ -44,4 +46,9 @@ export class CreateJobDto {
   @ValidateNested()
   @Type(() => Company)
   company: Company;
+
+  @IsNotEmpty({message: 'Start date is required' })
+  @Transform(({ value }) => new Date(value))  // Transform string to Date 
+  @IsDate({message: 'Start date must be a valid date' })
+  startDate: Date;
 }
